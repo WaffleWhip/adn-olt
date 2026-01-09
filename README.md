@@ -133,9 +133,36 @@ adn-olt/
 
 ## 🛠️ Deployment Guide
 
-Sistem ini menggunakan metode deployment **"Single Script"**. Tidak perlu konfigurasi manual yang rumit.
+Sistem ini menggunakan metode deployment **"Single Script"** dengan integrasi **Gemini CLI**.
 
-### Langkah Instalasi:
+### Prerequisites: Install Gemini CLI (Opsional - jika belum ada)
+
+Jika Anda menggunakan Proxmox, gunakan script otomatis `gemini.sh`:
+```bash
+chmod +x gemini.sh
+./gemini.sh
+```
+
+Script ini akan membuat LXC container dengan:
+- Debian latest template
+- 4GB RAM, Unlimited CPU
+- Node.js (latest) + Gemini CLI (`@google/gemini-cli`)
+- SSH access enabled
+- Auto-start on boot
+
+**Manual Installation (alternatif):**
+```bash
+# Install Node.js
+curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+apt install -y nodejs
+
+# Install Gemini CLI
+npm install -g @google/gemini-cli
+```
+
+---
+
+### Langkah Instalasi ADN OLT:
 
 1. **Clone repository:**
    ```bash
@@ -143,7 +170,7 @@ Sistem ini menggunakan metode deployment **"Single Script"**. Tidak perlu konfig
    cd adn-olt
    ```
 
-2. **Jalankan auto-installer:**
+2. **Setup Python environment:**
    ```bash
    chmod +x setup.sh
    ./setup.sh
@@ -154,10 +181,31 @@ Sistem ini menggunakan metode deployment **"Single Script"**. Tidak perlu konfig
    source venv/bin/activate
    ```
 
-4. **Panggil AI Agent (Gemini):**
+4. **Login Gemini AI (first time only):**
    ```bash
-   # AI akan membaca PLANNING.md dan generate code
+   gemini --yolo
    ```
+   
+   **Proses login:**
+   - CLI akan menampilkan link login Google
+   - Buka link di browser dan login dengan Google Account
+   - Copy token yang muncul setelah login
+   - Paste token ke CLI
+   - Login berhasil ✅
+
+5. **Jalankan AI Agent untuk generate code:**
+   ```bash
+   gemini
+   ```
+   
+   **Instruksi ke AI:**
+   > "Tolong baca file PLANNING.md dan generate semua file Python yang diperlukan sesuai spesifikasi. Implementasikan semua fitur yang ada di blueprint tersebut."
+   
+   AI akan otomatis membuat:
+   - `src/main.py` → CLI orchestrator
+   - `src/connector.py` → Multi-vendor OLT driver
+   - `src/security.py` → AES-256 encryption module
+   - `src/database.py` → SQLite inventory handler
 
 ---
 
