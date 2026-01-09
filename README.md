@@ -12,129 +12,152 @@ Sistem ini menghilangkan kompleksitas perintah CLI manual dengan menyediakan **A
 
 ---
 
-## 🤖 AI-Powered Development Workflow (Gemini)
-Sistem ini dikembangkan menggunakan pendekatan **AI-Driven Development** dengan Google Gemini sebagai co-developer. Cara kerjanya:
+## 🤖 AI-Powered Development Workflow
 
-1. **AI membaca `PLANNING.md`** - Dokumen blueprint yang berisi spesifikasi teknis, arsitektur, dan requirement sistem
-2. **AI menghasilkan kode** - Berdasarkan planning, AI secara otomatis membuat file-file Python:
-   - `src/main.py` - Orchestrator utama sistem
-   - `src/connector.py` - Driver koneksi SSH/Telnet untuk setiap vendor OLT
-   - `src/security.py` - Module enkripsi AES-256 untuk credential
-   - `src/database.py` - Handler SQLite untuk inventory management
-3. **Human review & iterate** - Developer melakukan review, testing, dan memberikan feedback untuk perbaikan
+Sistem ini dikembangkan menggunakan pendekatan **AI-Driven Development** dengan **Google Gemini** sebagai co-developer:
+
+### Cara Kerja:
+1. **AI membaca `PLANNING.md`** → Dokumen blueprint berisi spesifikasi teknis, arsitektur, dan requirement sistem
+2. **AI menghasilkan kode** → Berdasarkan planning, Gemini auto-generate file Python:
+   - `src/main.py` → Orchestrator utama sistem
+   - `src/connector.py` → Driver koneksi SSH/Telnet untuk setiap vendor OLT
+   - `src/security.py` → Module enkripsi AES-256 untuk credential
+   - `src/database.py` → Handler SQLite untuk inventory management
+3. **Human review & iterate** → Developer review, testing, dan feedback untuk perbaikan
 
 ### Natural Language Interface
-User tidak perlu menghafal perintah CLI Linux. Cukup berikan instruksi dalam Bahasa Indonesia/Inggris, dan Gemini Agent akan menerjemahkannya menjadi eksekusi kode Python yang aman.
+User tidak perlu menghafal perintah CLI Linux. Cukup berikan instruksi dalam **Bahasa Indonesia/Inggris**, dan Gemini Agent akan menerjemahkannya menjadi eksekusi kode Python yang aman.
 
-Berikut adalah **3 Contoh Skenario Penggunaan** sehari-hari:
+---
 
-### Skenario 1: Registrasi Perangkat Baru
-**User Prompt:**
+## 💬 Contoh Skenario Penggunaan
+
+#### Skenario 1: Registrasi Perangkat Baru
+**User:**
 > "Tolong tambahkan OLT Huawei baru dengan IP 10.14.35.114. Usernya 'huawei' dan passwordnya 'huawei123'. Langsung cek koneksinya."
 
-**AI Response (Expectation):**
-> "Siap. Sedang memproses enkripsi kredensial dan registrasi...
-> ... (AI menjalankan script `src/main.py add` di background) ...
->
-> **✅ Laporan:**
-> * **Target:** 10.14.35.114 (Huawei)
-> * **Protokol:** SSH (Port 22) - *Connected*
-> * **Status:** **ONLINE**
-> * **Uptime:** 2 Hari 5 Jam
->
-> Perangkat berhasil disimpan ke database inventory."
+**AI Response:**
+```
+Siap. Sedang memproses enkripsi kredensial dan registrasi...
+(AI menjalankan script src/main.py add di background)
+
+✅ Laporan:
+• Target: 10.14.35.114 (Huawei)
+• Protokol: SSH (Port 22) - Connected
+• Status: ONLINE
+• Uptime: 2 Hari 5 Jam
+
+Perangkat berhasil disimpan ke database inventory.
+```
 
 ---
 
-### Skenario 2: Monitoring & Health Check
-**User Prompt:**
+#### Skenario 2: Monitoring & Health Check
+**User:**
 > "Coba scan semua OLT sekarang dan tampilkan tabel statusnya. Apakah ada yang offline?"
 
-**AI Response (Expectation):**
-> "Melakukan scanning ke seluruh database inventory...
->
-> **📊 ADN OLT Inventory Status:**
-> | IP Address | Vendor | Protocol | Status | Uptime |
-> | :--- | :--- | :--- | :--- | :--- |
-> | 10.14.35.115 | Nokia | SSH | 🟢 ONLINE | 45d 12h |
-> | 10.14.35.118 | ZTE | Telnet | 🟢 ONLINE | 12d 4h |
-> | 10.14.35.116 | Huawei | SSH | 🟢 ONLINE | 2d 5h |
->
-> **Kesimpulan:** Semua 7 perangkat terpantau **SEHAT (Online)**. Tidak ada insiden yang terdeteksi."
+**AI Response:**
+```
+Melakukan scanning ke seluruh database inventory...
+
+📊 ADN OLT Inventory Status:
+┌──────────────────┬──────────┬──────────┬──────────┬──────────┐
+│ IP Address       │ Vendor   │ Protocol │ Status   │ Uptime   │
+├──────────────────┼──────────┼──────────┼──────────┼──────────┤
+│ 10.14.35.115     │ Nokia    │ SSH      │ 🟢 ONLINE│ 45d 12h  │
+│ 10.14.35.118     │ ZTE      │ Telnet   │ 🟢 ONLINE│ 12d 4h   │
+│ 10.14.35.116     │ Huawei   │ SSH      │ 🟢 ONLINE│ 2d 5h    │
+└──────────────────┴──────────┴──────────┴──────────┴──────────┘
+
+Kesimpulan: Semua 7 perangkat terpantau SEHAT (Online). 
+Tidak ada insiden yang terdeteksi.
+```
 
 ---
 
-### Skenario 3: Troubleshooting Cerdas
-**User Prompt:**
+#### Skenario 3: Troubleshooting Cerdas
+**User:**
 > "Tadi OLT Fiberhome sempat gagal connect. Tolong cek log error-nya dan jelaskan kenapa."
 
-**AI Response (Expectation):**
-> "Menganalisa log error terakhir untuk Fiberhome...
->
-> **⚠️ Temuan Error:** `NetmikoTimeoutException` pada Port 22 (SSH).
-> **Analisa:** Perangkat menolak koneksi SSH.
-> **Tindakan Otomatis:** Sistem telah melakukan *Fallback* ke Telnet (Port 23) dan koneksi berhasil dipulihkan.
->
-> **Status Saat Ini:** Online (via Telnet). Tidak perlu tindakan manual."
+**AI Response:**
+```
+Menganalisa log error terakhir untuk Fiberhome...
+
+⚠️ Temuan Error: NetmikoTimeoutException pada Port 22 (SSH)
+📌 Analisa: Perangkat menolak koneksi SSH
+🔄 Tindakan Otomatis: Sistem telah melakukan Fallback ke Telnet (Port 23)
+   dan koneksi berhasil dipulihkan.
+
+Status Saat Ini: Online (via Telnet). Tidak perlu tindakan manual.
+```
 
 ---
 
-## 🚀 Key Capabilities & Value
+## 🚀 Key Capabilities
 
-### 1. Universal Multi-Vendor Support
-Satu sistem terpusat untuk mengelola berbagai merk tanpa pusing memikirkan perbedaan sintaks CLI.
-* **Huawei:** Dilengkapi fitur *Anti-Paging Fix* (mengatasi error login `screen-length`).
-* **ZTE:** Deteksi otomatis port SSH/Telnet (Auto-Switching).
-* **Nokia & Fiberhome:** Driver khusus yang dioptimalkan.
+### 1. 🔌 Universal Multi-Vendor Support
+Satu sistem terpusat untuk mengelola berbagai merk tanpa pusing memikirkan perbedaan sintaks CLI:
+- **Huawei** → Fitur *Anti-Paging Fix* (mengatasi error login `screen-length`)
+- **ZTE** → Deteksi otomatis port SSH/Telnet (Auto-Switching)
+- **Nokia & Fiberhome** → Driver khusus yang dioptimalkan
 
-### 2. Enterprise-Grade Security
-* **Enkripsi AES-256:** Password database tidak bisa dibaca manusia (Ciphertext).
-* **Strict Folder Policy:** Mencegah kebocoran file log/script ke direktori root.
-* **Audit Trail:** Semua aktivitas tercatat di folder `logs/`.
+### 2. 🔒 Enterprise-Grade Security
+- **Enkripsi AES-256** → Password database tidak bisa dibaca manusia (Ciphertext)
+- **Strict Folder Policy** → Mencegah kebocoran file log/script ke direktori root
+- **Audit Trail** → Semua aktivitas tercatat di folder `logs/`
 
 ### 3. Clean Architecture
 Sistem dibangun modular agar mudah dirawat dan dikembangkan. File-file ini akan di-generate oleh AI berdasarkan `PLANNING.md`:
 
 ```text
-/root/adn-olt/
-├── src/               <-- BRAIN (Logika Python)
-│   ├── main.py        # Orchestrator (Pusat Komando) - Auto-generated by AI
-│   ├── connector.py   # Driver OLT (SSH/Telnet Handler) - Auto-generated by AI
-│   ├── security.py    # Modul Enkripsi - Auto-generated by AI
-│   └── database.py    # SQLite Handler - Auto-generated by AI
-├── data/              <-- MEMORY (Database)
-│   ├── adn.db         # Inventory & Logs (SQLite)
-│   └── secret.key     # Kunci Rahasia
-├── logs/              <-- AUDIT (Rekaman Aktivitas)
-├── PLANNING.md        # 🤖 AI Blueprint (dibaca oleh Gemini untuk generate code)
-└── README.md          # Dokumentasi
-```
-├── data/              <-- MEMORY (Database)
-│   ├── adn.db         # Inventory & Logs (SQLite)
-│   └── secret.key     # Kunci Rahasia
-└── logs/              <-- AUDIT (Rekaman Aktivitas)
+adn-olt/
+├── src/               # 🧠 BRAIN (Logika Python)
+│   ├── main.py        #   → Orchestrator - Auto-generated by AI
+│   ├── connector.py   #   → Driver OLT SSH/Telnet - Auto-generated by AI
+│   ├── security.py    #   → Modul Enkripsi AES-256 - Auto-generated by AI
+│   └── database.py    #   → SQLite Handler - Auto-generated by AI
+│
+├── data/              # 💾 MEMORY (Database)
+│   ├── adn.db         #   → Inventory & Logs (SQLite)
+│   └── secret.key     #   → Kunci Enkripsi Rahasia
+│
+├── logs/              # 📋 AUDIT (Rekaman Aktivitas)
+│
+├── PLANNING.md        # 🤖 AI Blueprint (dibaca oleh Gemini)
+├── README.md          # 📖 Dokumentasi
+├── requirements.txt   # 📦 Dependencies Python
+└── setup.sh           # ⚙️ Auto-installer Script
 ```
 
 ---
 
-## 🛠️ Deployment Guide (Golden Seed)
-Sistem ini menggunakan metode deployment "Single Script". Tidak perlu konfigurasi manual yang rumit.
+## 🛠️ Deployment Guide
+
+Sistem ini menggunakan metode deployment **"Single Script"**. Tidak perlu konfigurasi manual yang rumit.
 
 ### Langkah Instalasi:
 
-1. **Siapkan Environment:** Pastikan file `setup.sh`, `requirements.txt`, dan `PLANNING.md` sudah ada.
+1. **Clone repository:**
+   ```bash
+   git clone https://github.com/WaffleWhip/adn-olt.git
+   cd adn-olt
+   ```
 
-2. **Jalankan Instalasi:**
-```bash
-chmod +x setup.sh
-./setup.sh
-```
+2. **Jalankan auto-installer:**
+   ```bash
+   chmod +x setup.sh
+   ./setup.sh
+   ```
 
-3. **Aktifkan Agent:**
-```bash
-source venv/bin/activate
-# Lalu panggil agent AI Anda
-```
+3. **Aktifkan virtual environment:**
+   ```bash
+   source venv/bin/activate
+   ```
+
+4. **Panggil AI Agent (Gemini):**
+   ```bash
+   # AI akan membaca PLANNING.md dan generate code
+   ```
 
 ---
 
