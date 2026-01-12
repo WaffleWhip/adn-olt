@@ -138,20 +138,56 @@ Sistem ini menggunakan metode deployment **"Single Script"** dengan integrasi **
 
 ### Prerequisites: Install Gemini CLI (Opsional - jika belum ada)
 
-Jika Anda menggunakan Proxmox, gunakan script otomatis `gemini.sh`:
+#### 🔧 Opsi 1: Automated Setup via Proxmox Container (Recommended)
+
+Jika Anda menggunakan Proxmox, gunakan script otomatis `gemini.sh` untuk membuat LXC container secara otomatis:
+
 ```bash
 chmod +x gemini.sh
 ./gemini.sh
 ```
 
-Script ini akan membuat LXC container dengan:
-- Debian latest template
-- 4GB RAM, Unlimited CPU
-- Node.js (latest) + Gemini CLI (`@google/gemini-cli`)
-- SSH access enabled
-- Auto-start on boot
+**Apa yang dilakukan `gemini.sh`:**
+1. ✅ Update template database Proxmox
+2. ✅ Deteksi Debian template terbaru secara otomatis
+3. ✅ Buat LXC Container dengan konfigurasi:
+   - **ID Container**: 100 (dapat disesuaikan di script)
+   - **OS**: Debian Latest
+   - **RAM**: 4GB
+   - **CPU**: Unlimited (default sistem)
+   - **Storage**: Auto-detect
+   - **Network**: DHCP (automatic IP assignment)
+   - **Root Password**: `telkom123` (dapat disesuaikan)
+4. ✅ Install SSH server untuk akses remote
+5. ✅ Install Node.js (latest version)
+6. ✅ Install Gemini CLI via npm
+7. ✅ Enable auto-start on boot
 
-**Manual Installation (alternatif):**
+**Output setelah sukses:**
+```
+SUCCESS: Gemini-CLI is ready!
+Container ID  : 100
+RAM           : 4GB
+CPU           : Unlimited (Host Default)
+Persistence   : Enabled (Start on boot)
+Container IP  : 10.x.x.x (auto-assigned)
+SSH Command   : ssh root@10.x.x.x
+Gemini Command: gemini
+```
+
+**Akses container:**
+```bash
+# Via SSH
+ssh root@<container-ip>
+
+# Via Proxmox console
+pct exec 100 bash
+```
+
+---
+
+#### 🐧 Opsi 2: Manual Installation (jika tidak pakai Proxmox)
+
 ```bash
 # Install Node.js
 curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
@@ -159,6 +195,19 @@ apt install -y nodejs
 
 # Install Gemini CLI
 npm install -g @google/gemini-cli
+```
+
+---
+
+#### 📝 Customizing `gemini.sh`:
+
+Edit file `gemini.sh` untuk menyesuaikan konfigurasi:
+```bash
+CTID="100"              # Container ID (ubah jika 100 sudah digunakan)
+HOSTNAME="Gemini-CLI"   # Nama hostname container
+BRIDGE="vmbr0"          # Network bridge (sesuaikan dengan Proxmox Anda)
+PASSWORD="telkom123"    # Root password
+RAM="4096"              # RAM dalam MB (4096 = 4GB)
 ```
 
 ---
