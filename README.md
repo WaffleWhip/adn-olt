@@ -126,7 +126,8 @@ adn-olt/
 ├── PLANNING.md        # 🤖 AI Blueprint (dibaca oleh Gemini)
 ├── README.md          # 📖 Dokumentasi
 ├── requirements.txt   # 📦 Dependencies Python
-└── setup.sh           # ⚙️ Auto-installer Script
+├── setup.sh           # ⚙️ Auto-installer Script
+└── gemini.sh          # 🔧 Gemini CLI Installer (Proxmox LXC)
 ```
 
 ---
